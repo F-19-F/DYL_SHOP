@@ -1,0 +1,35 @@
+{% extends 'Main/base.html' %}
+{% block title %}Create Bid Item{% endblock title %}
+
+{% block main-content %}
+
+{% if user.is_authenticated %}
+
+<div class="container">
+    <div class="row my-3">
+        <div class="col-sm-6 offset-sm-3">
+            <h3>Add Item</h3>
+            <hr>
+            <div class="form-group">
+                <form action="" method='POST'>
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <div class="text-end">
+                        <button class="btn btn-danger">Create</button>
+                    </div>
+                    <br>
+                    
+                 </form>
+            </div>
+            
+
+       
+        </div>
+    </div>
+</div>
+    
+{% else %}
+    You are not allowed here!
+{% endif %}
+
+{% endblock main-content  %}

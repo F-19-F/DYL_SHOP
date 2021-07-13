@@ -1,0 +1,47 @@
+{% extends 'Main/base.html' %}
+{% load static %}
+{% block title %}Check Out{% endblock title %}
+{% block main-content %}
+<div class="container">
+ <div class="row mt-5">
+  <div class="col-sm-6">
+    <h4>订单总览</h4>
+    <hr>
+    {% for item in cart_items %}
+      <div class="card mb-2">
+        <div class="card-body">
+          <h5>商品名: {{item.product.title}}</h5>
+          <p>数量: {{item.quantity}}</p>
+          <p class="fw-bold">商品价格: ¥ {{item.total_cost}} </p>
+        </div>
+      </div>
+      {% endfor %}
+      <p class="fw-bold"> 商品价格 + ¥ 70= ¥ {{totalamount}}</p>
+    <small>请确保订单无误后继续！</small>
+  </div>
+  
+  <div class="col-sm-4 offset-sm-1">
+    <h4>选择收货地址</h4>
+    <hr>
+    <form action="/paymentdone">
+    {% for ad in add  %}
+      <div class="card">
+        <div class="card-body">
+        <h5>{{ad.name}}</h5>
+        <p>{{ad.locality}},{{ad.city}},{{ad.state}}-{{ad.zipcode}}</p>
+        </div>
+      </div>
+        <div class="form-check mt-2 mb-5">
+          <input class="form-check-input" name="custid" id="custadd{{forloop.counter}}" type="radio" value="{{ad.id}}">
+          <label class="form-check-label fw-bold" for="custadd{{forloop.counter}}">
+            Address:{{forloop.counter}}</label>
+        </div>
+        {% endfor %}
+        <div class="text-end">
+          <button type="submit" class="btn cart mt-3 px-5 fw-bold">继续</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock main-content %}

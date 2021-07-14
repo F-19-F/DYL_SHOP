@@ -4,6 +4,44 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db.models.deletion import CASCADE
 
 
+# 种类
+
+class KIND(models.Model):
+    KID = models.BigAutoField(primary_key=True, null=False)
+    PKID = models.ForeignKey('self', on_delete=models.RESTRICT, null=True, blank=True, verbose_name="父级种类")
+    Name = models.CharField(max_length=15, verbose_name="种类名", unique=True)
+
+    class Meta:
+        db_table = 'KIND'
+        verbose_name = '种类'
+
+    def __str__(self):
+        return self.Name
+
+
+# 商户模型
+
+class SHOPS(models.Model):
+    class Type_CHOICE(models.IntegerChoices):
+        PERSON = 0, '个人'
+        ENTERPRISE = 1, '企业'
+
+    SID = models.BigAutoField(primary_key=True, null=False)
+    UID = models.OneToOneField(User, on_delete=models.RESTRICT, verbose_name="绑定的登录用户", null=True, blank=True)
+    DES = models.TextField(verbose_name="商户的描述")
+    Name = models.CharField(max_length=20, verbose_name="商户名称")
+    Pic = models.ImageField(upload_to='productimg', verbose_name='商户Logo')
+    KID = models.ForeignKey(KIND, on_delete=models.RESTRICT, verbose_name="主营商品类型")
+    TYPE = models.IntegerField(choices=Type_CHOICE.choices, default=Type_CHOICE.PERSON, verbose_name="商户类型")
+
+    class Meta:
+        db_table = 'SHOP'
+        verbose_name = '商户'
+
+    def __str__(self):
+        return self.Name
+
+
 # 买家信息
 class Customer(models.Model):
     STATE_CHOICES = (
@@ -56,20 +94,18 @@ class Customer(models.Model):
 
 # 商品信息
 class Product(models.Model):
-    CATEGORY_CHOICES = (
-        ('M', 'Mobile'),
-        ('L', 'Laptop'),
-        ('TW', 'Top wear'),
-        ('BW', 'Bottom Wear'),
-    )
+    class Status_CHOICE(models.IntegerChoices):
+        NORMAL = 0, '正常浏览'
+        NOT_SALE = 1, '商家下架'
+        INVALID = 2, '违规下架'
     id = models.BigAutoField(primary_key=True, null=False)
-    title = models.CharField(max_length=200,verbose_name='标题')
+    title = models.CharField(max_length=200, verbose_name='标题')
     selling_price = models.FloatField(verbose_name='销售价')
     discounted_price = models.FloatField(verbose_name='打折价')
     description = models.TextField(verbose_name='商品描述')
-    brand = models.CharField(max_length=200,verbose_name='品牌')
-    category = models.CharField(choices=CATEGORY_CHOICES, max_length=2,verbose_name='种类')
-    product_image = models.ImageField(upload_to='productimg',verbose_name='商品图片')
+    kind = models.ForeignKey(KIND, on_delete=models.CASCADE, verbose_name='种类')
+    product_image = models.ImageField(upload_to='productimg', verbose_name='商品图片')
+    Status = models.IntegerField(choices=Status_CHOICE.choices, default=Status_CHOICE.NORMAL, verbose_name="商品可浏览性")
 
     def __str__(self):
         return self.title
@@ -107,11 +143,11 @@ class OrderPlaced(models.Model):
 
     )
     id = models.BigAutoField(primary_key=True, null=False)
-    user = models.ForeignKey(User, on_delete=models.CASCADE,verbose_name='对应用户')
-    customer = models.ForeignKey(Customer, on_delete=models.CASCADE,verbose_name='用户信息')
-    product = models.ForeignKey(Product, on_delete=models.CASCADE,verbose_name='购买商品')
-    quantity = models.PositiveIntegerField(default=1,verbose_name='数量')
-    ordered_date = models.DateTimeField(auto_now_add=True,verbose_name='创建日期')
+    user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='对应用户')
+    customer = models.ForeignKey(Customer, on_delete=models.CASCADE, verbose_name='用户信息')
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, verbose_name='购买商品')
+    quantity = models.PositiveIntegerField(default=1, verbose_name='数量')
+    ordered_date = models.DateTimeField(auto_now_add=True, verbose_name='创建日期')
     status = models.CharField(max_length=50, choices=STATUS_CHOICES, default='pending')
 
     class Meta:

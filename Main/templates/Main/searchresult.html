@@ -1,32 +1,37 @@
 {% extends 'Main/base.html' %}
 {% load static %}
-{% block title %}Bottom wears{% endblock title %}
+{% block title %}搜索结果{% endblock title %}
 {% block main-content %}
 <div class="container my-5">
       <div class="row">
-            <div class="col-sm-3">
-                  <div class="list-group">
-                        <a href="{% url 'bottomwear' %}" class="list-group-item list-group-item-action cart" aria-current="true">All Items</a>
-                        <a href="{% url 'bottomweardata' 'lira' %}" class="list-group-item cart list-group-item-action" aria-current="true">Lira</a>
-                        <a href="{% url 'bottomweardata' 'Richman' %}" class="list-group-item cart list-group-item-action" aria-current="true">Richman</a>
-
-                  </div>
-            </div>
+            <!--侧栏-->
+            <!--右侧商品-->
             <div class="col-sm-8">
                   <div class="row">
-                        {% for product in bottomwears %}
+                  {% if goods %}
+                        {% for product in goods %}
                               <div class="col-sm-4 text-center mb-4">
+                                    <!--整个商品放在-->
                                     <a href="{% url 'product-detail' product.id %}" class="btn">
                                           <div class="item">
+                                                <!--商品图片-->
                                                 <img src="{{ product.product_image.url }}" height="300" class="">
+                                                <!--商品标题-->
                                                 <div class="fw-bold">{{ product.title }}</div>
-                                                <div class="fw-bold">{{ product.discounted_price }} 
+                                                <!--商品打折价-->
+                                                <div class="fw-bold">{{ product.discounted_price }}
+                                                <!--商品原价，划线-->
                                                       <small class="fw-light text-decoration-line-through">{{product.selling_price}}</small>
                                                 </div>
                                           </div>
                                     </a>
                               </div>
                         {% endfor %}
+                  {% else %}
+                      <div class="col-sm-4 text-center mb-4">
+                            <strong>没有搜索到指定商品哦</strong>
+                      </div>
+                  {% endif %}
                   </div>
             </div>
       </div>

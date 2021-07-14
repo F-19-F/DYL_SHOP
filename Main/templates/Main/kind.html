@@ -1,0 +1,48 @@
+{% extends 'Main/base.html' %}
+{% load static %}
+{% block title %}{{ mainkind.Name }}{% endblock title %}
+{% block main-content %}
+<div class="container my-5">
+      <div class="row">
+            <!--侧栏-->
+            <div class="col-sm-3">
+                  <div class="list-group">
+                      <!--父级类型栏-->
+                       <a href="{% url 'kind' mainkind.KID %}" class="list-group-item cart list-group-item-action" aria-current="true">{{mainkind.Name}}</a>
+                      {% for k in subkinds %}
+                        <a href="{% url 'skind' mainkind.KID k.KID %}" class="list-group-item cart list-group-item-action" aria-current="true">{{k.Name}}</a>
+                      {% endfor %}
+                  </div>
+            </div>
+            <!--右侧商品-->
+            <div class="col-sm-8">
+                  <div class="row">
+                  {% if goods %}
+                        {% for product in goods %}
+                              <div class="col-sm-4 text-center mb-4">
+                                    <!--整个商品放在-->
+                                    <a href="{% url 'product-detail' product.id %}" class="btn">
+                                          <div class="item">
+                                                <!--商品图片-->
+                                                <img src="{{ product.product_image.url }}" height="300" class="">
+                                                <!--商品标题-->
+                                                <div class="fw-bold">{{ product.title }}</div>
+                                                <!--商品打折价-->
+                                                <div class="fw-bold">{{ product.discounted_price }}
+                                                <!--商品原价，划线-->
+                                                      <small class="fw-light text-decoration-line-through">{{product.selling_price}}</small>
+                                                </div>
+                                          </div>
+                                    </a>
+                              </div>
+                        {% endfor %}
+                  {% else %}
+                      <div class="col-sm-4 text-center mb-4">
+                            <strong>这里没有商品哦</strong>
+                      </div>
+                  {% endif %}
+                  </div>
+            </div>
+      </div>
+</div>
+{% endblock main-content %}

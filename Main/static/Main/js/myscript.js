@@ -1,5 +1,5 @@
 
-$('#slider1, #slider2, #slider3').owlCarousel({
+$("div[id*='slider']").owlCarousel({
     loop: true,
     margin: 20,
     responsiveClass: true,

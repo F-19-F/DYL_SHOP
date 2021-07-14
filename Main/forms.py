@@ -35,12 +35,12 @@ class LoginForm(AuthenticationForm):
 # 修改密码表达
 class MyPschangeForm(PasswordChangeForm):
     old_password = forms.CharField(label=_("原始密码"), strip=False, widget=forms.PasswordInput(
-        attrs={'autocomplete': 'current-password', 'autofocus': True, 'class': 'from-control'}))
+        attrs={'autocomplete': 'current-password', 'autofocus': True, 'class': 'form-control'}))
     new_password1 = forms.CharField(label=_("新密码"), strip=False, widget=forms.PasswordInput(
-        attrs={'autocomplete': 'new-password', 'class': 'from-control'}),
+        attrs={'autocomplete': 'new-password', 'class': 'form-control'}),
                                     help_text=password_validation.password_validators_help_text_html())
     new_password2 = forms.CharField(label=_("确认新密码"), strip=False, widget=forms.PasswordInput(
-        attrs={'autocomplete': 'new-password', 'class': 'from-control'}))
+        attrs={'autocomplete': 'new-password', 'class': 'form-control'}))
 
 
 # 重置密码
@@ -81,14 +81,12 @@ class CustomerProfileForm(forms.ModelForm):
 class AddItemForm(forms.ModelForm):
     class Meta:
         model = Product
-        fields = ('title', 'description', 'brand', 'category', 'selling_price', 'discounted_price', 'product_image')
+        fields = ('title', 'description', 'kind', 'selling_price', 'discounted_price', 'product_image')
 
         widgets = {
             'title': forms.TextInput(attrs={'class': 'form-control'}),
             'description': forms.Textarea(attrs={'class': 'form-control'}),
-            'brand': forms.TextInput(attrs={'class': 'form-control'}),
             'selling_price': forms.TextInput(attrs={'class': 'form-control'}),
-            'category': forms.Select(attrs={'class': 'form-control'}),
             # 'product_image':forms.ImageField(attrs={'class': 'form-control'  }),
             'discounted_price': forms.TextInput(attrs={'class': 'form-control'}),
         }

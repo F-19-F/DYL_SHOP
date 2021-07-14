@@ -4,34 +4,41 @@ from django.http.request import QueryDict
 from django.http.response import JsonResponse
 from django.shortcuts import redirect, render
 from django.views import View
-from .models import Cart, Customer, Product, OrderPlaced, User
+from .models import Cart, Customer, Product, OrderPlaced, User, KIND
 from .forms import AddItemForm, CustomerProfileForm, CustomerRegisterForm
 from django.contrib import messages
 from django.db.models import Q
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 
 
+# 主页视图
 class ProductView(View):
     def get(self, request):
         totalitem = 0
-        topwears = Product.objects.filter(category="TW")
-        bottomwears = Product.objects.filter(category="BW")
-        laptops = Product.objects.filter(category="L")
-        mobiles = Product.objects.filter(category="M")
+        subkinds = KIND.objects.filter(PKID__isnull=False)
+        # print(subkinds)
+        kind_good = []
+        for i in subkinds:
+            goods = Product.objects.filter(kind=i)
+            if len(goods) == 0:
+                continue
+            one = {
+                'kind': i,
+                'goods': goods
+            }
+            kind_good.append(one)
         if request.user.is_authenticated:
             totalitem = len(Cart.objects.filter(user=request.user))
         return render(request, 'Main/home.html', {
-            'topwears': topwears,
-            'bottomwears': bottomwears,
-            'laptops': laptops,
-            'mobiles': mobiles,
-            'totalitem': totalitem,
+            'totalitem': totalitem,  # 购物车数量
+            'kind_good': kind_good
         }
                       )
 
 
+# 商品详情界面
 class ProductDetailView(View):
     def get(self, request, pk):
         totalitem = 0
@@ -47,6 +54,7 @@ class ProductDetailView(View):
         })
 
 
+# 添加到购物车后重定向到购物车界面
 @login_required
 def add_to_cart(request):
     user = request.user
@@ -56,6 +64,7 @@ def add_to_cart(request):
     return redirect('/cart')
 
 
+# 购物车界面
 @login_required
 def show_cart(request):
     totalitem = 0
@@ -82,6 +91,7 @@ def show_cart(request):
             return render(request, 'Main/emptycart.html')
 
 
+# 购物车数量添加接口
 def plus_cart(request):
     if request.method == 'GET':
         prod_id = request.GET['prod_id']
@@ -104,11 +114,12 @@ def plus_cart(request):
         return JsonResponse(data)
 
 
+# 购物车数量减少接口
 def minus_cart(request):
     if request.method == 'GET':
         prod_id = request.GET['prod_id']
         c = Cart.objects.get(Q(product=prod_id) & Q(user=request.user))
-        if c.quantity >0:
+        if c.quantity > 0:
             c.quantity -= 1
         c.save()
         amount = 0.0
@@ -125,6 +136,7 @@ def minus_cart(request):
     return JsonResponse(data)
 
 
+# 移除购物车中的商品接口
 def remove_cart(request):
     if request.method == 'GET':
         prod_id = request.GET['prod_id']
@@ -151,6 +163,7 @@ def buy_now(request):
     return render(request, 'Main/buynow.html')
 
 
+# 用户地址界面
 @login_required
 def address(request):
     totalitem = 0
@@ -164,6 +177,7 @@ def address(request):
                    })
 
 
+# 订单界面
 @login_required
 def orders(request):
     totalitem = 0
@@ -176,54 +190,68 @@ def orders(request):
     })
 
 
-# Item Views Start here
-
-def mobile(request, data=None):
-    if data == None:
-        mobiles = Product.objects.filter(category='M')
-    elif data == 'Apple' or data == 'Samsung':
-        mobiles = Product.objects.filter(category='M').filter(brand=data)
-    return render(request, 'Main/mobile.html', {
-        'mobiles': mobiles,
-
-    })
-
-
-def laptop(request, data=None):
-    if data == None:
-        laptops = Product.objects.filter(category='L')
-    elif data == 'Apple' or data == 'hp':
-        laptops = Product.objects.filter(category='L').filter(brand=data)
-    return render(request, 'Main/laptop.html', {
-        'laptops': laptops,
-
-    })
-
-
-def topwear(request, data=None):
-    if data == None:
-        topwears = Product.objects.filter(category='TW')
-    elif data == 'lira' or data == 'gentlepark':
-        topwears = Product.objects.filter(category='TW').filter(brand=data)
-    return render(request, 'Main/topwears.html', {
-        'topwears': topwears,
-
-    })
+# 父级种类视图
+def kind(request, data=None):
+    if data:
+        # 非法参数
+        if not data.isdigit():
+            return redirect('/')
+        try:
+            mainkind = KIND.objects.get(KID=data)
+        except:
+            return HttpResponse('/')
+        subkinds = KIND.objects.filter(PKID__KID=data)
+        all_goods = []
+        for i in subkinds:
+            products = Product.objects.filter(kind=i)
+            all_goods += products
+        # all_goods为所有父种类为参数的商品列表
+        render_data = {
+            'mainkind': mainkind,
+            'subkinds': subkinds,
+            'goods': all_goods
+        }
+        return render(request, 'Main/kind.html', render_data)
+    else:
+        return redirect('/')
 
 
-def bottomwear(request, data=None):
-    if data == None:
-        bottomwears = Product.objects.filter(category='BW')
-    elif data == 'lira' or data == 'Richman' or data == 'gentle park ':
-        bottomwears = Product.objects.filter(category='BW').filter(brand=data)
-    return render(request, 'Main/bottomwear.html', {
-        'bottomwears': bottomwears,
+# 子种类视图
+def skind(request, pkid=None, kid=None):
+    if pkid:
+        try:
+            mainkind = KIND.objects.get(KID=pkid)
+        except:
+            return HttpResponse('/')
+        subkinds = KIND.objects.filter(PKID__KID=pkid)
+        try:
+            all_goods = Product.objects.filter(kind=kid)
+        except:
+            return HttpResponse('/')
+        render_data = {
+            'mainkind': mainkind,
+            'subkinds': subkinds,
+            'goods': all_goods
+        }
+        return render(request, 'Main/kind.html', render_data)
+    else:
+        return redirect('/')
 
-    })
+
+def search(request):
+    if request.method == 'POST':
+        keywords = request.POST.get('keywords')
+        res = Product.objects.filter(title__contains=keywords)
+        render_data = {
+            'goods': res
+        }
+        return render(request, 'Main/searchresult.html', render_data)
+    else:
+        return redirect('/')
 
 
 # Item Views End here
-
+# 注册视图
 class CustomerRegistrationView(View):
     @staticmethod
     def get(request):
@@ -239,6 +267,15 @@ class CustomerRegistrationView(View):
         return render(request, 'Main/customerregistration.html', {'form': form})
 
 
+@login_required
+def checkout_advance(request,product_id):
+    user = request.user
+    product = Product.objects.get(id=product_id)
+    Cart(user=user, product=product).save()
+    return redirect('/checkout/')
+
+
+# 结算视图
 @login_required
 def checkout(request):
     user = request.user
@@ -260,6 +297,7 @@ def checkout(request):
     })
 
 
+# 支付完成界面
 @login_required
 def payment_done(request):
     user = request.user
@@ -272,6 +310,7 @@ def payment_done(request):
     return redirect("orders")
 
 
+# 个人信息添加页面
 @method_decorator(login_required, name='dispatch')
 class ProfileView(View):
     def get(self, request):
@@ -301,16 +340,3 @@ class ProfileView(View):
             'form': form,
             'active': 'btn-primary'
         })
-
-
-"""
-class AddItemView(View):
-  def get(self,request):
-    form= AddItemForm
-    return render(request,'Main/additem.html',{'form':form})
-  def post(self,request):
-    form=AddItemForm(request.POST)
-    messages.success(request,'Congratulations!!  Item Added Successfully...')
-    form.save('Main/home.html')
-    return render(request,'Main/additem.html',{'form':form})
-"""

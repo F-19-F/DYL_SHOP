@@ -15,7 +15,7 @@
 
 {% if request.user.is_authenticated %}
    {% if item_already_in_cart %}
-      <a class="btn cart shadow px-5 py-2 ms-4" href="{% url 'show-cart' %}">Go to Cart</a>
+      <a class="btn cart shadow px-5 py-2 ms-4" href="{% url 'show-cart' %}">添加到购物车</a>
    {% else %}
       <form action="/add-to-cart" class="d-inline">
          <input type="hidden" name="prod_id" value={{product.id}} id="prod_id">
@@ -33,13 +33,13 @@
 
 
 
-   <a href="{% url 'checkout' %}" class="btn  cart shadow px-5 py-2 ms-4">立即购买</a>
-   <h5 class="mt-5">Available Offers</h5>
+   <a href="{% url 'checkout' product.id%}" class="btn  cart shadow px-5 py-2 ms-4">立即购买</a>
+   <h5 class="mt-5">大鸭梨承诺</h5>
    <ul>
-    <li>Bank Offer 5% Unlimited Cashback on Flipkart Axis Bank Credit</li>
-    <li>Special Price Get extra 3000tk off (price inclusive of discount)</li>
-    <li>No cost EMI 1,667tk/month. Standard EMI also available</li>
-    <li>Partner Offer 2000tk Flipkart Gift Card on Every 1000th Transaction with a new Visa Debit/Credit Card</li>
+    <li>大鸭梨平台卖家销售并发货的商品，由平台卖家提供发票和相应的售后服务。请您放心购买！</li>
+    <li>本商品质保周期为1年质保，在此时间范围内可提交维修申请，具体请以厂家服务为准。</li>
+    <li>大鸭梨上的所有商品信息、客户评价、商品咨询、网友讨论等内容，是大鸭梨重要的经营资源，未经许可，禁止非法转载使用。</li>
+    <li>本站商品信息均来自于合作方，其真实性、准确性和合法性由信息拥有者（合作方）负责。本站不提供任何保证，并不承担任何法律责任。</li>
    </ul>
   </div>
  </div>

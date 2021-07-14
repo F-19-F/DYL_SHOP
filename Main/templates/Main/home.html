@@ -2,7 +2,7 @@
 
 {% load static %}
 
-{% block title %}Home{% endblock title %}
+{% block title %}主页{% endblock title %}
 
 {% block banner_slider %}
 <!--Banner Slider-->
@@ -56,86 +56,29 @@
 <!--main content starts here-->
 
 {% block main-content %}
+{% if kind_good %}
+    {% for i in kind_good %}
+        <div class="m-3 ">
+    <h2 class="alert alert-info sale">大鸭梨{{i.kind.Name}}专区</h2>
+  <div class="owl-carousel" id="slider{{ i.kind.KID }}">
 
-<!-- 1st Product Slider -->
-<div class="m-3 ">
-    <h2 class="alert alert-info sale">Shop-Now Bottom Wears</h2>
-    <!-- Slider 1 -->
-  <div class="owl-carousel" id="slider1">
+    <!--每个商品-->
+    {% for j in i.goods %}
 
-    {% for i in bottomwears %}
-
-      <a href="{% url 'product-detail' i.id %}" class="btn">
+      <a href="{% url 'product-detail' j.id %}" class="btn">
         <div class="item">
-          <img src="{{ i.product_image.url }}" alt="" height="200px">
-          <span class="fw-bold">{{ i.title }}</span><br>
-          <span class="fs-5">¥ {{ i.discounted_price }}</span>
+          <img src="{{ j.product_image.url }}" alt="" height="200px">
+          <span class="fw-bold">{{ j.title }}</span><br>
+          <span class="fs-5">¥ {{ j.discounted_price }}</span>
         </div>
       </a>
+    {% endfor %}
 
-    {% endfor %} 
+
   </div>
 </div>
-
-<!-- 2nd Product Slider -->
-<div class="m-3">
-    <h2 class="alert alert-info sale">Shop-Now Top Wears</h2>
-    <!-- Slider 2 -->
-
-  <div class="owl-carousel" id="slider2">
-
-    {% for t in topwears %}
-
-      <a href="{% url 'product-detail' t.id %}" class="btn">
-        <div class="item">
-          <img src="{{ t.product_image.url }}" alt="" height="200px">
-          <span class="fw-bold">{{ t.title }}</span><br>
-          <span class="fs-5">¥ {{t.discounted_price}}</span>
-        </div>
-      </a>
-    {% endfor %} 
-  </div>
-</div>
-
-<!-- 3RD Product Slider -->
-<div class="m-3">
-    <h2 class="alert alert-info sale">Shop-Now Laptop</h2>
-    <!-- Slider 3-->
-
-  <div class="owl-carousel" id="slider3">
-
-  {% for l in laptops %}
-
-    <a href="{% url 'product-detail' l.id %}" class="btn">
-      <div class="item">
-        <img src="{{ l.product_image.url }}" alt="" height="200px">
-        <span class="fw-bold">{{ l.title }}</span><br>
-        <span class="fs-5">¥ {{l.discounted_price}}</span>
-      </div>
-    </a>
- {% endfor %} 
-  </div>
-</div>
-
-<!-- 4tH Product Slider -->
-<div class="m-3">
-    <h2 class="alert alert-info sale">Shop-Now Mobiles</h2>
-    <!-- Slider 4 -->
-  <div class="owl-carousel" id="slider3">
-
-    {% for mo in mobiles %}
-
-      <a href="{% url 'product-detail' mo.id %}" class="btn">
-       <div class="item">
-          <img src="{{ mo.product_image.url }}" alt="" height="200px">
-          <span class="fw-bold">{{ mo.title }}</span><br>
-          <span class="fs-5">¥ {{ mo.discounted_price }}</span>
-        </div>
-      </a>
-    {% endfor %} 
-  </div>
-</div>
-<!-- End product Slider -->
+    {% endfor %}
+    {% endif %}
 
 <!-- Payment Info Section -->
 <div class="container my-5">

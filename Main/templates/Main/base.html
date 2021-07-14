@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 {% load static %}
-<html lang="en">
+{% load global_tags %}
+<html lang="zh-CN">
   <head>
     <!-- Required meta tags -->
     <meta charset="utf-8" />
@@ -46,7 +47,8 @@
           </button>
           <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-              <li class="nav-item">
+              <!--注册顶栏选项-->
+                <li class="nav-item">
                 <a
                   class="nav-link active text-black"
                   aria-current="page"
@@ -54,62 +56,17 @@
                   >主页</a
                 >
               </li>
-              <li class="nav-item dropdown">
-                <a
-                  class="nav-link dropdown-toggle text-black drp"
-                  href="#"
-                  id="electronicsDropdown"
-                  role="button"
-                  data-bs-toggle="dropdown"
-                  aria-expanded="false"
-                >
-                  Electronics
-                </a>
-                <ul class="dropdown-menu" aria-labelledby="electronicsDropdown">
-                  <li>
-                    <a class="dropdown-item" href="{% url 'mobile' %}"
-                      >Mobile</a
-                    >
-                  </li>
-                  <li>
-                    <a class="dropdown-item" href="{% url 'laptop' %}"
-                      >Laptop</a
-                    >
-                  </li>
-                </ul>
-              </li>
-              <li class="nav-item dropdown">
-                <a
-                  class="nav-link dropdown-toggle text-black"
-                  href="#"
-                  id="fashionDropdown"
-                  role="button"
-                  data-bs-toggle="dropdown"
-                  aria-expanded="false"
-                >
-                  Fashion
-                </a>
-                <ul class="dropdown-menu" aria-labelledby="fashionDropdown">
-                  <li>
-                    <a class="dropdown-item" href="{% url 'topwear' %}"
-                      >Top Wear</a
-                    >
-                  </li>
-                  <li>
-                    <a class="dropdown-item" href="{% url 'bottomwear' %}"
-                      >Bottom Wear</a
-                    >
-                  </li>
-                </ul>
-              </li>
+                {% get_topkind_list %}
             </ul>
-            <form class="d-flex">
+            <form class="d-flex" action="{% url 'search' %}" method="post">
               <input
                 class="form-control me-2"
                 type="search"
                 placeholder="搜索商品名"
                 aria-label="Search"
+                name="keywords"
               />
+                {% csrf_token %}
               <button class="btn alert-warning cart" type="submit">搜</button>
             </form>
             <div>

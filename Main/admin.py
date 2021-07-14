@@ -58,13 +58,16 @@ class CustomerModelAdmin(admin.ModelAdmin):
 class CustomerModelAdmin(admin.ModelAdmin):
     list_display = ['id', 'user', 'customer', 'customer_info', 'product', 'product_info', 'quantity', 'ordered_date',
                     'status']
+    list_editable = ['status']
 
     @staticmethod
+    @admin.display(description='客户信息')
     def customer_info(obj):
         link = reverse("admin:Main_customer_change", args=[obj.customer.pk])
         return format_html('<a href="{}">{}</a>', link, obj.customer.name)
 
     @staticmethod
+    @admin.display(description='商品信息')
     def product_info(obj):
         link = reverse("admin:Main_product_change", args=[obj.product.pk])
         return format_html('<a href="{}">{}</a>', link, obj.product.title)

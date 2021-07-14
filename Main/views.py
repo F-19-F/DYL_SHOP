@@ -261,9 +261,11 @@ class CustomerRegistrationView(View):
     @staticmethod
     def post(request):
         form = CustomerRegisterForm(request.POST)
-        if form.is_valid:
+        if form.is_valid():
             messages.success(request, '注册成功!')
             form.save()
+        else:
+            print(form.errors)
         return render(request, 'Main/customerregistration.html', {'form': form})
 
 
@@ -335,7 +337,7 @@ class ProfileView(View):
             zipcode = form.cleaned_data['zipcode']
             reg = Customer(user=usr, name=name, locality=locality, city=city, state=state, zipcode=zipcode)
             reg.save()
-            messages.success(request, 'Congratulations!! Profile Updated Successfully')
+            messages.success(request, '信息修改成功!')
         return render(request, 'Main/profile.html', {
             'form': form,
             'active': 'btn-primary'

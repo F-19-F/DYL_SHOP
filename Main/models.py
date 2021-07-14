@@ -74,7 +74,7 @@ class Customer(models.Model):
         ('新疆维吾尔自治区', '新疆维吾尔自治区'),
         ('北京市', '北京市'),
         ('天津市', '天津市'),
-        ('上海市', '重庆市'),
+        ('上海市', '上海市'),
         ('重庆市', '重庆市'),
     )
     id = models.BigAutoField(primary_key=True, null=False)
@@ -134,21 +134,20 @@ class Cart(models.Model):
 
 # 订单模型
 class OrderPlaced(models.Model):
-    STATUS_CHOICES = (
-        ('Accepted', 'Accepted'),
-        ('Paked', 'Paked'),
-        ('On The Way', 'On The Way'),
-        ('Delivered', 'Delivered'),
-        ('Cancel', 'Cancel'),
-
-    )
+    class CHOICE(models.TextChoices):
+        Accepted = '已完成', '已完成'
+        Paked = '已打包', '已打包'
+        OnWay = '已发货','已发货'
+        Delivered = '已送达','已送达'
+        Cancel = '已取消','已取消'
+        pending = '受理中','受理中'
     id = models.BigAutoField(primary_key=True, null=False)
     user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='对应用户')
     customer = models.ForeignKey(Customer, on_delete=models.CASCADE, verbose_name='用户信息')
     product = models.ForeignKey(Product, on_delete=models.CASCADE, verbose_name='购买商品')
     quantity = models.PositiveIntegerField(default=1, verbose_name='数量')
     ordered_date = models.DateTimeField(auto_now_add=True, verbose_name='创建日期')
-    status = models.CharField(max_length=50, choices=STATUS_CHOICES, default='pending')
+    status = models.CharField(max_length=50, choices=CHOICE.choices, default=CHOICE.pending ,verbose_name='订单状态')
 
     class Meta:
         verbose_name = '订单'

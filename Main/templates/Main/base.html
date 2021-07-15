@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 {% load static %}
 {% load global_tags %}
+<link rel="icon" type="image/x-icon" href="{% static 'Main/favicon.ico' %}" />
 <html lang="zh-CN">
   <head>
     <!-- Required meta tags -->
@@ -109,6 +110,11 @@
                         >后台入口</a
                       >
                     </li>
+                      <li>
+                      <a class="dropdown-item" href="{% url 'analyze' %}"
+                        >销量数据分析</a
+                      >
+                    </li>
                   </ul>
                 </li>
                 <li class="nav-item mx-2">
@@ -144,13 +150,6 @@
       <small class="text-white"
         >Copyright &copy; 2021 || 大鸭梨团队 ||
       </small>
-      <img
-        src="{% static 'Main/images/payment.png' %}"
-        alt=""
-        srcset=""
-        class="img-fluid"
-        height="2px"
-      />
     </footer>
     <!-- End Footer -->
 

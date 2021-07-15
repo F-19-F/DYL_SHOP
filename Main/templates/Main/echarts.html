@@ -1,0 +1,6 @@
+{% for jsfile_name in script_list %}
+<script type="text/javascript" src="{{ host }}/{{ jsfile_name }}.js"></script>
+{% endfor %}
+<div class="row placeholders" id="pic">
+                {{myechart|safe}}
+</div>

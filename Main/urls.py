@@ -25,6 +25,7 @@ urlpatterns = [
                   path('kind/<slug:data>',views.kind,name='kind'),
                   path('kind/<int:pkid>/<int:kid>',views.skind,name='skind'),
                   path('search/',views.search,name='search'),
+                  path('analyze/',views.university_picture,name='analyze'),
                   path('accounts/login/',
                        auth_views.LoginView.as_view(template_name='Main/login.html', authentication_form=LoginForm),
                        name='login'),

@@ -11,8 +11,13 @@ from django.db.models import Q
 from django.http import JsonResponse, HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
+from pyecharts.charts import Line
 
-
+#pyecharts
+from jinja2 import Environment, FileSystemLoader
+from pyecharts.globals import CurrentConfig
+from pyecharts import options as opts
+from pyecharts.charts import Bar
 # 主页视图
 class ProductView(View):
     def get(self, request):
@@ -304,6 +309,8 @@ def checkout(request):
 def payment_done(request):
     user = request.user
     custid = request.GET.get('custid')
+    if not custid:
+        return redirect('/checkout')
     customer = Customer.objects.get(id=custid)
     cart = Cart.objects.filter(user=user)
     for c in cart:
@@ -342,3 +349,20 @@ class ProfileView(View):
             'form': form,
             'active': 'btn-primary'
         })
+
+@login_required
+def university_picture(request):
+    subkinds=KIND.objects.filter(PKID__isnull=False)
+    kinds=[]
+    sale=[]
+    for i in subkinds:
+        kinds.append(i.Name)
+        sales=len(OrderPlaced.objects.filter(product__kind=i))
+        sale.append(sales)
+    c = (
+        Bar()
+        .add_xaxis(kinds)
+        .add_yaxis("销量", sale)
+        .set_global_opts(title_opts=opts.TitleOpts(title="销量分析", subtitle="按子类型分析"))
+    )
+    return HttpResponse(c.render_embed())

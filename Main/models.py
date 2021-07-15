@@ -19,27 +19,6 @@ class KIND(models.Model):
         return self.Name
 
 
-# 商户模型
-
-class SHOPS(models.Model):
-    class Type_CHOICE(models.IntegerChoices):
-        PERSON = 0, '个人'
-        ENTERPRISE = 1, '企业'
-
-    SID = models.BigAutoField(primary_key=True, null=False)
-    UID = models.OneToOneField(User, on_delete=models.RESTRICT, verbose_name="绑定的登录用户", null=True, blank=True)
-    DES = models.TextField(verbose_name="商户的描述")
-    Name = models.CharField(max_length=20, verbose_name="商户名称")
-    Pic = models.ImageField(upload_to='productimg', verbose_name='商户Logo')
-    KID = models.ForeignKey(KIND, on_delete=models.RESTRICT, verbose_name="主营商品类型")
-    TYPE = models.IntegerField(choices=Type_CHOICE.choices, default=Type_CHOICE.PERSON, verbose_name="商户类型")
-
-    class Meta:
-        db_table = 'SHOP'
-        verbose_name = '商户'
-
-    def __str__(self):
-        return self.Name
 
 
 # 买家信息

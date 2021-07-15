@@ -13,7 +13,6 @@ from .models import (
     Cart,
     OrderPlaced,
     KIND,
-    SHOPS
 )
 
 
@@ -23,14 +22,14 @@ class CustomerModelAdmin(admin.ModelAdmin):
     list_display = ('Name', 'PKID')
     list_editable = ('PKID',)
 
-
+'''
 # 注册商户管理模型
 @admin.register(SHOPS)
 class CustomerModelAdmin(admin.ModelAdmin):
     list_display = ('Name', 'KID', 'DES', 'TYPE')
     search_fields = ['Name']
     list_editable = ('TYPE',)
-
+'''
 
 # 注册顾客管理模型
 @admin.register(Customer)
